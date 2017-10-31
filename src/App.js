@@ -3,15 +3,22 @@ import logo from './logo.svg';
 import './App.css';
 import Chart from 'chart.js';
 import SunCalc from 'suncalc';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    Chart.defaults.global.elements.point.radius = 1;
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
           <h1 className="App-title">The 8 Season Year</h1>
         </header>
-        <EightSeasonYear />
+        <div className="container">
+          <EightSeasonYear />
+        </div>
       </div>
     );
   }
@@ -20,24 +27,27 @@ class App extends Component {
 class EightSeasonYear extends Component {
   constructor(props) {
     super(props);
-    this.state = {data: {}};
+    this.state = {
+      days: 2*365,
+      data: {}
+    };
   }
   getData() {
     var start_date = new Date();
-    start_date.setDate(start_date.getDate() - 182);
+    start_date.setDate(start_date.getDate() - this.state.days/2);
 
     var data = {
       labels: [],
       datasets: [{
-        label: "label",
+        label: "Change in daylight hours over time",
         data: [],
-        backgroundColor: [],
+        backgroundColor: "#00aaff",
         borderColor: [],
         borderWidth: 1
       }]
     };
 
-    for (let i = 0; i < 365; i++) {
+    for (let i = 0; i < this.state.days; i++) {
       let date = new Date(start_date);
       date.setDate(date.getDate() + i);
       let sunData =  SunCalc.getTimes(date,49.2827,-123.1207);
