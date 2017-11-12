@@ -1,1 +1,0 @@
-// https://hermetic.ch/eqsol/eqsol.htm
