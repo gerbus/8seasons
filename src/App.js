@@ -7,10 +7,12 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Meeus from '../node_modules/astronomia/lib/base.js';
 import * as EightSeasons from './8seasons.js';
 
+
+
 class App extends Component {
   constructor(props) {
     super(props);
-    Chart.defaults.global.elements.point.radius = 1;
+    Chart.defaults.global.elements.point.radius = 0;
   }
   render() {
     return (
@@ -30,30 +32,36 @@ class EightSeasonYear extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      days: 356*2,
+      days: 365*2,
       data: {}
     };
   }
   
   getDaylightHoursData() {
     var start_date = new Date();
-    start_date.setDate(start_date.getDate() - this.state.days/2);
+    start_date.setDate(start_date.getDate() - Math.floor(this.state.days/2));
     
     var dataset = {
       label: "",
       data: [],
       backgroundColor: "#00aaff",
+      pointBackgroundColor: [],
+      pointRadius: [],
       borderColor: [],
       borderWidth: 1
     };
     
     var data = {
       labels: [],
-      datasets: [dataset]
+      datasets: []
     };
     
-    this.getIntervalCount(start_date);
+    // Count number of 8seasons in timeframe, create a dataset for each
+    for (let d = 0; d < this.get8SeasonCount(start_date); d++) {
+      data.datasets.push(dataset);
+    }
     
+    // Get all data points
     for (let i = 0; i < this.state.days; i++) {
       // Set date
       let date = new Date(start_date);
@@ -66,14 +74,25 @@ class EightSeasonYear extends Component {
       // Segment data by season
       data.labels.push(date);
       data.datasets[0].data.push(daylightHours);
+      
+      // Today?
+      if (i === Math.floor(this.state.days/2)) {  
+        // Style Today differently
+        data.datasets[0].pointBackgroundColor.push("ff0000");
+        data.datasets[0].pointRadius.push(8);
+      } else {
+        data.datasets[0].pointBackgroundColor.push("00aaff");
+        data.datasets[0].pointRadius.push(0);
+      }
     }
     
     return data;
   }
-  getIntervalCount(start_date) {
+  get8SeasonCount(start_date) {
     // How many intervals?
     let lastInterval = "";
     let intervalCount = 0;
+    
     for (let i = 0; i < this.state.days; i++) {
       // Set date
       let date = new Date(start_date);
@@ -85,11 +104,14 @@ class EightSeasonYear extends Component {
       // Incremet counter if new season
       if (lastInterval != interval) {
         intervalCount++;
-        console.log(interval);
+        //console.log(interval);
         lastInterval = interval;
       }
     }
-    console.log(intervalCount);
+    return intervalCount;
+  }
+  get8SeasonIndex(date) {
+    
   }
   componentWillMount() {
     this.setState({data: this.getDaylightHoursData()});
@@ -103,8 +125,16 @@ class EightSeasonYear extends Component {
   componentDidMount() {
     var myChart = new Chart(this.refs["myChart"], {
       type: 'line',
-      data: this.state.data
+      data: this.state.data,
+      options: {
+        scales: {
+            yAxes: [{}]
+        }
+      }
     });
+  }
+  componentDidUpdate() {
+    //myChart.datasets[0].points[this.today_index].fillColor = "#ff0000"; 
   }
 }
 

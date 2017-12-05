@@ -59,39 +59,61 @@ export function getSamiSeason(date) {
       break;
   }
 }
+
+export function getWinter1(year) {
+  return Julian.toDate(Solstice.december(year)); 
+}
+export function getSpring1(year) {
+  return Julian.toDate(Solstice.march(year));
+}
+export function getSummer1(year) {
+  return Julian.toDate(Solstice.june(year));
+}
+export function getAutumn1(year) {
+  return Julian.toDate(Solstice.september(year));
+}
+
+export function getWinter2(year) {
+  let winter1 = getWinter1(year-1);
+  let spring1 = getSpring1(year);
+  return new Date(winter1.getTime() + (spring1.getTime() - winter1.getTime())/2);
+}
+export function getSpring2(year) {
+  let spring1 = getSpring1(year);
+  let summer1 = getSummer1(year);
+  return new Date(spring1.getTime() + (summer1.getTime() - spring1.getTime())/2);
+}
+export function getSummer2(year) {
+  let summer1 = getSummer1(year);
+  let autumn1 = getAutumn1(year);
+  return new Date(summer1.getTime() + (autumn1.getTime() - summer1.getTime())/2);
+}
+export function getAutumn2(year) {
+  let autumn1 = getAutumn1(year);
+  let winter1 = getWinter1(year);
+  return new Date(autumn1.getTime() + (winter1.getTime() - autumn1.getTime())/2);
+}
+
 function get8SeasonIndex(date) {
   let year = date.getFullYear();
-
-  // Get solstice and equinox dates 
-  let LastWinter = Julian.toDate(Solstice.december(year-1));  // Previous Winter Solstice
-  let Spring = Julian.toDate(Solstice.march(year));
-  let Summer = Julian.toDate(Solstice.june(year));
-  let Autumn = Julian.toDate(Solstice.september(year));
-  let Winter = Julian.toDate(Solstice.december(year));
-
-  // Calculate cross-quarter dates (occur midway between solstices and equinoxes)
-  let WinterSpringMedian = new Date(LastWinter.getTime() + (Spring.getTime() - LastWinter.getTime())/2);
-  let SpringSummerMedian = new Date(Spring.getTime() + (Summer.getTime() - Spring.getTime())/2);
-  let SummerAutumnMedian = new Date(Summer.getTime() + (Autumn.getTime() - Summer.getTime())/2);
-  let AutumnWinterMedian = new Date(Autumn.getTime() + (Winter.getTime() - Autumn.getTime())/2);
   
   // Run through dates and return correct index
-  if (date < WinterSpringMedian) {
+  if (date >= getWinter1(year)) {
     return 0;
-  } else if (date < Spring) {
-    return 1;
-  } else if (date < SpringSummerMedian) {
-    return 2;
-  } else if (date < Summer) {
-    return 3;
-  } else if (date < SummerAutumnMedian) {
-    return 4;
-  } else if (date < Autumn) {
-    return 5;
-  } else if (date < AutumnWinterMedian) {
-    return 6;
-  } else if (date < Winter) {
+  } else if (date >= getAutumn2(year)) {
     return 7;
+  } else if (date >= getAutumn1(year)) {
+    return 6;
+  } else if (date >= getSummer2(year)) {
+    return 5;
+  } else if (date >= getSummer1(year)) {
+    return 4;
+  } else if (date >= getSpring2(year)) {
+    return 3;
+  } else if (date >= getSpring1(year)) {
+    return 2;
+  } else if (date >= getWinter2(year)) {
+    return 1;
   } else {
     return 0;
   }
