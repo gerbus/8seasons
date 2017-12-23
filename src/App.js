@@ -56,63 +56,57 @@ class EightSeasonYear extends Component {
     };
     
     // Initialize 8Season
-    let active8Season = EightSeasons.get8Season(start_date);
-    let lastInterval = start_date.getFullYear() + " - " + active8Season;
-    let activeIntervalIndex = 0; 
+    let lastInterval = "";
+    let activeIntervalIndex = -1; 
     
     // Count number of 8seasons in timeframe (create a dataset for each)
-    var n8Seasons = this.get8SeasonCount(start_date);
-    console.log(n8Seasons);
-    for (var i = 0; i < n8Seasons; i++) {
-      data.datasets.push(new Object());
-      data.datasets[i].label = lastInterval;
-      data.datasets[i].data = [];
-      data.datasets[i].backgroundColor = pallette[active8Season.replace(" ","").toLowerCase()];
-      data.datasets[i].pointBackgroundColor = [];
-      data.datasets[i].pointRadius = [];
-    }
+    //var n8Seasons = this.get8SeasonCount(start_date);
    
     // Iterate through all data points in range
     for (let i = 0; i < this.state.days; i++) {
-      
-      // Get sunlight data for each date
       let date = new Date(start_date);
       date.setDate(date.getDate() + i);
-      data.labels.push(date);
-      let sunData =  SunCalc.getTimes(date,49.2827,-123.1207);
-      let daylightHours = (sunData.sunset - sunData.sunrise) / (1000 * 3600);
       
       // Set active 8season
-      active8Season = EightSeasons.get8Season(date);
+      let active8Season = EightSeasons.get8Season(date);
       let activeInterval = date.getFullYear() + " - " + active8Season;
       if (lastInterval != activeInterval) {
         // Push new 8Season
         activeIntervalIndex++;
+        
+        data.datasets.push(new Object());
         data.datasets[activeIntervalIndex].label = activeInterval;
         data.datasets[activeIntervalIndex].backgroundColor = pallette[active8Season.replace(" ","").toLowerCase()];
+        data.datasets[activeIntervalIndex].pointBackgroundColor = []; 
+        data.datasets[activeIntervalIndex].pointRadius = [];
+        data.datasets[activeIntervalIndex].data = [];
+
+        // Back fill previous days not in this season
+        for (let prevDay = 0; prevDay < i; prevDay++) {
+          data.datasets[activeIntervalIndex].data.push(null); 
+          data.datasets[activeIntervalIndex].pointBackgroundColor.push("#000000");
+          data.datasets[activeIntervalIndex].pointRadius.push(0);
+        }
+        
         lastInterval = activeInterval;
       }
       
-      // Push data point to active dataset, null to other datasets
-      for (let s = 0; s < n8Seasons; s++) {
-        if (s == activeIntervalIndex) {
-          data.datasets[activeIntervalIndex].data.push(daylightHours);
-          // Today?
-          if (i === Math.floor(this.state.days/2)) {  
-            // Style Today differently
-            data.datasets[activeIntervalIndex].pointBackgroundColor.push("#ff0000");
-            data.datasets[activeIntervalIndex].pointRadius.push(8);
-          } else {
-            data.datasets[activeIntervalIndex].pointBackgroundColor.push("#000000");
-            data.datasets[activeIntervalIndex].pointRadius.push(0);
-          }
-        } else {
-          // Other datasets get null
-          data.datasets[s].data.push(null);
-          data.datasets[s].pointBackgroundColor.push("#000000");
-          data.datasets[s].pointRadius.push(0);
-        }
+      // Push sunlight data for today
+      data.labels.push(date);
+      let sunData =  SunCalc.getTimes(date,49.2827,-123.1207);
+      let daylightHours = (sunData.sunset - sunData.sunrise) / (1000 * 3600);
+      data.datasets[activeIntervalIndex].data.push(daylightHours);
+      
+      // Today?
+      if (i === Math.floor(this.state.days/2)) {  
+        // Style Today differently
+        data.datasets[activeIntervalIndex].pointBackgroundColor.push("#ff0000");
+        data.datasets[activeIntervalIndex].pointRadius.push(8);
+      } else {
+        data.datasets[activeIntervalIndex].pointBackgroundColor.push("#000000");
+        data.datasets[activeIntervalIndex].pointRadius.push(0);
       }
+      
     }
     console.log(data);
     return data;
@@ -138,9 +132,6 @@ class EightSeasonYear extends Component {
       }
     }
     return intervalCount;
-  }
-  get8SeasonIndex(date) {
-    
   }
   componentWillMount() {
     this.setState({data: this.getDaylightHoursData()});
