@@ -7,7 +7,6 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Meeus from '../node_modules/astronomia/lib/base.js';
 import * as EightSeasons from './8seasons.js';
 
-
 const pallette = {
   winter1: "#8888ff",
   winter2: "#8888cc",
@@ -51,25 +50,15 @@ class EightSeasonYear extends Component {
     var start_date = new Date();
     start_date.setDate(start_date.getDate() - Math.floor(this.state.days/2));
     
-    var dataset = {
-      label: "",
-      data: [],
-      backgroundColor: "#00aaff",
-      pointBackgroundColor: [],
-      pointRadius: [],
-      borderColor: [],
-      borderWidth: 1
-    };
-    
     var data = {
       labels: [],
       datasets: []
     };
     
     // Initialize 8Season
-    let eightSeason = EightSeasons.get8Season(start_date);
-    let lastInterval = start_date.getFullYear() + " - " + eightSeason;
-    let intervalIndex = 0; 
+    let active8Season = EightSeasons.get8Season(start_date);
+    let lastInterval = start_date.getFullYear() + " - " + active8Season;
+    let activeIntervalIndex = 0; 
     
     // Count number of 8seasons in timeframe (create a dataset for each)
     var n8Seasons = this.get8SeasonCount(start_date);
@@ -78,7 +67,7 @@ class EightSeasonYear extends Component {
       data.datasets.push(new Object());
       data.datasets[i].label = lastInterval;
       data.datasets[i].data = [];
-      data.datasets[i].backgroundColor = pallette[eightSeason.replace(" ","").toLowerCase()];
+      data.datasets[i].backgroundColor = pallette[active8Season.replace(" ","").toLowerCase()];
       data.datasets[i].pointBackgroundColor = [];
       data.datasets[i].pointRadius = [];
     }
@@ -86,49 +75,44 @@ class EightSeasonYear extends Component {
     // Iterate through all data points in range
     for (let i = 0; i < this.state.days; i++) {
       
-      // Set date
+      // Get sunlight data for each date
       let date = new Date(start_date);
       date.setDate(date.getDate() + i);
-      
-      // Set active 8season
-      let eightSeason = EightSeasons.get8Season(date);
-      let interval = date.getFullYear() + " - " + eightSeason;
-      if (lastInterval != interval) {
-        intervalIndex++;
-        lastInterval = interval;
-        data.datasets[intervalIndex].label = interval;
-        data.datasets[intervalIndex].backgroundColor = pallette[eightSeason.replace(" ","").toLowerCase()];
-      }
-      
-      // Get data
+      data.labels.push(date);
       let sunData =  SunCalc.getTimes(date,49.2827,-123.1207);
       let daylightHours = (sunData.sunset - sunData.sunrise) / (1000 * 3600);
       
-      // Segment data by season
-      data.labels.push(date);
+      // Set active 8season
+      active8Season = EightSeasons.get8Season(date);
+      let activeInterval = date.getFullYear() + " - " + active8Season;
+      if (lastInterval != activeInterval) {
+        // Push new 8Season
+        activeIntervalIndex++;
+        data.datasets[activeIntervalIndex].label = activeInterval;
+        data.datasets[activeIntervalIndex].backgroundColor = pallette[active8Season.replace(" ","").toLowerCase()];
+        lastInterval = activeInterval;
+      }
       
+      // Push data point to active dataset, null to other datasets
       for (let s = 0; s < n8Seasons; s++) {
-        if (s == intervalIndex) {
-          // Active dataset gets values
-          data.datasets[intervalIndex].data.push(daylightHours);
+        if (s == activeIntervalIndex) {
+          data.datasets[activeIntervalIndex].data.push(daylightHours);
           // Today?
           if (i === Math.floor(this.state.days/2)) {  
             // Style Today differently
-            data.datasets[intervalIndex].pointBackgroundColor.push("ff0000");
-            data.datasets[intervalIndex].pointRadius.push(8);
+            data.datasets[activeIntervalIndex].pointBackgroundColor.push("#ff0000");
+            data.datasets[activeIntervalIndex].pointRadius.push(8);
           } else {
-            data.datasets[intervalIndex].pointBackgroundColor.push("000000");
-            data.datasets[intervalIndex].pointRadius.push(0);
+            data.datasets[activeIntervalIndex].pointBackgroundColor.push("#000000");
+            data.datasets[activeIntervalIndex].pointRadius.push(0);
           }
         } else {
           // Other datasets get null
           data.datasets[s].data.push(null);
-          data.datasets[s].pointBackgroundColor.push("000000");
+          data.datasets[s].pointBackgroundColor.push("#000000");
           data.datasets[s].pointRadius.push(0);
         }
       }
-      
-      
     }
     console.log(data);
     return data;
