@@ -8,6 +8,16 @@ import Meeus from '../node_modules/astronomia/lib/base.js';
 import * as EightSeasons from './8seasons.js';
 
 
+const pallette = {
+  winter1: "#8888ff",
+  winter2: "#8888cc",
+  spring1: "#88ff88",
+  spring2: "#ccff88",
+  summer1: "#ffffcc",
+  summer2: "#ffff88",
+  autumn1: "#ff4400",
+  autumn2: "#ff8800"
+};
 
 class App extends Component {
   constructor(props) {
@@ -56,16 +66,39 @@ class EightSeasonYear extends Component {
       datasets: []
     };
     
-    // Count number of 8seasons in timeframe, create a dataset for each
-    for (let d = 0; d < this.get8SeasonCount(start_date); d++) {
-      data.datasets.push(dataset);
-    }
+    // Initialize 8Season
+    let eightSeason = EightSeasons.get8Season(start_date);
+    let lastInterval = start_date.getFullYear() + " - " + eightSeason;
+    let intervalIndex = 0; 
     
-    // Get all data points
+    // Count number of 8seasons in timeframe (create a dataset for each)
+    var n8Seasons = this.get8SeasonCount(start_date);
+    console.log(n8Seasons);
+    for (var i = 0; i < n8Seasons; i++) {
+      data.datasets.push(new Object());
+      data.datasets[i].label = lastInterval;
+      data.datasets[i].data = [];
+      data.datasets[i].backgroundColor = pallette[eightSeason.replace(" ","").toLowerCase()];
+      data.datasets[i].pointBackgroundColor = [];
+      data.datasets[i].pointRadius = [];
+    }
+   
+    // Iterate through all data points in range
     for (let i = 0; i < this.state.days; i++) {
+      
       // Set date
       let date = new Date(start_date);
       date.setDate(date.getDate() + i);
+      
+      // Set active 8season
+      let eightSeason = EightSeasons.get8Season(date);
+      let interval = date.getFullYear() + " - " + eightSeason;
+      if (lastInterval != interval) {
+        intervalIndex++;
+        lastInterval = interval;
+        data.datasets[intervalIndex].label = interval;
+        data.datasets[intervalIndex].backgroundColor = pallette[eightSeason.replace(" ","").toLowerCase()];
+      }
       
       // Get data
       let sunData =  SunCalc.getTimes(date,49.2827,-123.1207);
@@ -73,19 +106,31 @@ class EightSeasonYear extends Component {
       
       // Segment data by season
       data.labels.push(date);
-      data.datasets[0].data.push(daylightHours);
       
-      // Today?
-      if (i === Math.floor(this.state.days/2)) {  
-        // Style Today differently
-        data.datasets[0].pointBackgroundColor.push("ff0000");
-        data.datasets[0].pointRadius.push(8);
-      } else {
-        data.datasets[0].pointBackgroundColor.push("00aaff");
-        data.datasets[0].pointRadius.push(0);
+      for (let s = 0; s < n8Seasons; s++) {
+        if (s == intervalIndex) {
+          // Active dataset gets values
+          data.datasets[intervalIndex].data.push(daylightHours);
+          // Today?
+          if (i === Math.floor(this.state.days/2)) {  
+            // Style Today differently
+            data.datasets[intervalIndex].pointBackgroundColor.push("ff0000");
+            data.datasets[intervalIndex].pointRadius.push(8);
+          } else {
+            data.datasets[intervalIndex].pointBackgroundColor.push("000000");
+            data.datasets[intervalIndex].pointRadius.push(0);
+          }
+        } else {
+          // Other datasets get null
+          data.datasets[s].data.push(null);
+          data.datasets[s].pointBackgroundColor.push("000000");
+          data.datasets[s].pointRadius.push(0);
+        }
       }
+      
+      
     }
-    
+    console.log(data);
     return data;
   }
   get8SeasonCount(start_date) {
