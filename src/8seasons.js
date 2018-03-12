@@ -6,17 +6,13 @@ const Julian = require('../node_modules/julian/index.js');
 const name = ["Winter 1","Winter 2","Spring 1","Spring 2","Summer 1","Summer 2","Autumn 1","Autumn 2"];
 const samiName = ["Winter","Late Winter","Spring","Early Summer","Summer","Late Summer","Autumn","Early Winter"];
 
-export function get8Season(date) {
+export function get8SeasonName(date, offset = 0) {
   let data = get8SeasonInfo(date);
-  return data.name;
+  return name[(data.index + offset) % 8];
 }
-export function getNext8Season(date) {
+export function get8SeasonSamiName(date, offset = 0) {
   let data = get8SeasonInfo(date);
-  return name[data.index + 1];
-}
-export function getSamiSeason(date) {
-  let data = get8SeasonInfo(date);
-  return data.samiName;
+  return samiName[(data.index + offset) % 8];
 }
 
 export function getWinter1(year) {
@@ -65,10 +61,13 @@ export function get8SeasonInfo(date) {
   let winter1Start = getWinter1(year);
   
   let data = {};
+  data.seasonStartYear = year;
+  data.seasonEndYear = year;
   // Run (backwards) through dates and return correct info
   if (date >= winter1Start) { // Today is in winter 1, near the end of the year
     data.index = 0;
     data.seasonStart = winter1Start;
+    data.seasonEndYear = year + 1;
     data.seasonEnd = getWinter2(year + 1);  // the end of winter 1 will be next year
   } else if (date >= autumn2Start) {
     data.index = 7;
@@ -100,14 +99,14 @@ export function get8SeasonInfo(date) {
     data.seasonEnd = spring1Start;
   } else {  // Today is in winter 1, near the beginning of the year
     data.index = 0;
+    data.seasonStartYear = year - 1;
     data.seasonStart = getWinter1(year - 1);  // the start of winter 1 was last year
     data.seasonEnd = winter2Start;
   }
   
-  data.seasonName = name[data.index];
-  data.nextSeasonName = name[(data.index + 1) % 8]
-  data.seasonNameSami = samiName[data.index];
-  data.nextSeasonNameSami = samiName[(data.index + 1) % 8]
+  data.seasonName = { 
+    name: name[data.index], 
+    sami: samiName[data.index] };
   
   return data;
 }

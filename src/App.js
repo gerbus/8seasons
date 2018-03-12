@@ -46,18 +46,63 @@ class App extends Component {
   }
   render() {
     return(
-      <div>
-        <ul>
-          <li>{this.state.currentTime}</li>
-          <li>{this.state.current8season}</li>
-          <li>{this.state.current8seasonStart} to {this.state.current8seasonEnd}</li>
-          <li>{this.state.next8season}</li>
-          <li>{this.state.currentSunrise}</li>
-          <li>{this.state.currentSunset}</li>
-          <li>{this.state.currentDaylightHours}</li>
-        </ul>
+      <div className="container">
+        <div className="title">
+          <h1>The 8 Seasons</h1>
+          <h3>That's right: eight. I need a higher resolution to my year. The Sami did it. Come on, let's do eight seasons per year.</h3>
+        </div>
+        <div className="seasons">
+          <ProximateSeasons />
+        </div>
       </div>
     );
+  }
+}
+
+
+class ProximateSeasons extends Component {
+  constructor(props) {
+    super(props);
+
+    let currentSeason = EightSeasons.get8SeasonInfo(new Date());
+    let previousSeasonDate = new Date(moment(currentSeason.seasonStart).subtract(2,"day").valueOf());
+    let nextSeasonDate = new Date(moment(currentSeason.seasonEnd).add(2,"day").valueOf());
+    let previousSeason = EightSeasons.get8SeasonInfo(previousSeasonDate);
+    let nextSeason = EightSeasons.get8SeasonInfo(nextSeasonDate);    
+    
+    console.log(previousSeason);
+    console.log(nextSeason);
+    
+    this.state = {
+      currentSeason: currentSeason,
+      previousSeason: previousSeason,
+      nextSeason: nextSeason
+    };
+  }
+  render() {
+    return (
+      <table><tbody>
+        <tr>
+          <td></td>
+          <td>{this.state.previousSeason.seasonName.name} {this.getYearSpan(this.state.previousSeason)}</td>
+        </tr>
+        <tr className="current">
+          <td>You are here >></td>
+          <td>{this.state.currentSeason.seasonName.name} {this.getYearSpan(this.state.currentSeason)}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>{this.state.nextSeason.seasonName.name} {this.getYearSpan(this.state.nextSeason)}</td>
+        </tr>
+      </tbody></table>
+    )
+  }
+  getYearSpan(season) {
+    if (season.seasonStartYear === season.seasonEndYear) {
+      return season.seasonStartYear;
+    } else {
+      return season.seasonStartYear + '/' + season.seasonEndYear;
+    }
   }
 }
 
