@@ -13,10 +13,10 @@ const Julian = require('../node_modules/julian/index.js');
 export class EightSeason {
   constructor(date) {
     // Class skeleton
-    this.startYear = null;
-    this.endYear = null;
-    this.startDate = null;
-    this.endDate = null;
+    this.yearStart = null;
+    this.yearEnd = null;
+    this.dateStart = null;
+    this.dateEnd = null;
     this.index = null;
     this.name = {
       fourByTwo: null,
@@ -36,58 +36,58 @@ export class EightSeason {
     let winter1StartDate = getWinter1StartDate(year);
 
     // Set default start and end year of the Eight-season
-    this.startYear = year;
-    this.endYear = year;
+    this.yearStart = year;
+    this.yearEnd = year;
     
     // Run (backwards) through Eight-seasons to find the one 
     //  containing the provided date
     if (date >= winter1StartDate) { 
       // Winter 1, the part near the end of the year
       this.index = 0;
-      this.startDate = winter1StartDate;
-      this.endYear = year + 1;  // the end of winter 1 will be next year
-      this.endDate = getWinter2StartDate(year + 1);  
+      this.dateStart = winter1StartDate;
+      this.yearEnd = year + 1;  // the end of winter 1 will be next year
+      this.dateEnd = getWinter2StartDate(year + 1);  
     } else if (date >= autumn2StartDate) {
       // Autumn 2
       this.index = 7;
-      this.startDate = autumn2StartDate;
-      this.endDate = winter1StartDate;
+      this.dateStart = autumn2StartDate;
+      this.dateEnd = winter1StartDate;
     } else if (date >= autumn1StartDate) {
       // Autumn 1
       this.index = 6;
-      this.startDate = autumn1StartDate;
-      this.endDate = autumn2StartDate;
+      this.dateStart = autumn1StartDate;
+      this.dateEnd = autumn2StartDate;
     } else if (date >= summer2StartDate) {
       // Summer 2
       this.index = 5;
-      this.startDate = summer2StartDate;
-      this.endDate = autumn1StartDate;
+      this.dateStart = summer2StartDate;
+      this.dateEnd = autumn1StartDate;
     } else if (date >= summer1StartDate) {
       // Summer 1
       this.index = 4;
-      this.startDate = summer1StartDate;
-      this.endDate = summer1StartDate;
+      this.dateStart = summer1StartDate;
+      this.dateEnd = summer2StartDate;
     } else if (date >= spring2StartDate) {
       // Spring 2
       this.index = 3;
-      this.startDate = spring2StartDate;
-      this.endDate = summer1StartDate;
+      this.dateStart = spring2StartDate;
+      this.dateEnd = summer1StartDate;
     } else if (date >= spring1StartDate) {
       // Spring 1
       this.index = 2;
-      this.startDate = spring1StartDate;
-      this.endDate = spring2StartDate;
+      this.dateStart = spring1StartDate;
+      this.dateEnd = spring2StartDate;
     } else if (date >= winter2StartDate) {
       // Winter 2
       this.index = 1;
-      this.startDate = winter2StartDate;
-      this.endDate = spring1StartDate;
+      this.dateStart = winter2StartDate;
+      this.dateEnd = spring1StartDate;
     } else {  
       // Winter 1, the part near the beginning of the year
       this.index = 0;
-      this.startYear = year - 1;  // the start of winter 1 was last year
-      this.startDate = getWinter1StartDate(year - 1);  
-      this.endDate = winter2StartDate;
+      this.yearStart = year - 1;  // the start of winter 1 was last year
+      this.dateStart = getWinter1StartDate(year - 1);  
+      this.dateEnd = winter2StartDate;
     }
 
     // Set the name of the containing Eight-season

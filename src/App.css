@@ -6,22 +6,37 @@ h3 {
 }
 
 .seasons tr {
-  vertical-align: middle;
   height: 50px;
 }
+.seasons tr.current {
+  height: 100px;
+}
+
 .seasons td {
   position: relative;
-  border: 1px solid #aaa;
 }
-.seasons .current {
-  height: 200px;
+.seasons td.name {
+  vertical-align: middle;
+  width: 100px;
 }
-.seasons td .start {
+.seasons td.name .year {
+  display: block;
+  font-size: 0.7rem;
+}
+
+.seasons td.date,
+.seasons td.today {
+  width: 80px;
+  border: none;
+  font-size: 0.7rem;
+}
+.seasons td.date .start {
   position: absolute;
   top: 0;
   transform:translateY(-50%);
 }
-.seasons td .year {
-  display: block;
-  font-size: 0.8rem;
+.seasons td.today .now {
+  position: absolute;
+  top: 0;
+  transform: translateY(-50%);
 }

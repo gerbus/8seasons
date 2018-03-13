@@ -42,7 +42,7 @@ class App extends Component {
       <div className="container">
         <div className="title">
           <h1>The 8 Seasons</h1>
-          <h3>That's right: eight. I need a higher resolution to my year. The Sami did it. Come on, let's do eight seasons per year.</h3>
+          <h3>I need a higher resolution to my year. The Sami people already did it. There's more to the changing of seasons than you think.</h3>
         </div>
         <div className="seasons">
           <ProximateSeasons />
@@ -66,19 +66,25 @@ class ProximateSeasons extends Component {
   }
   render() {
     return (
-      <table>
+      <table className="table table-sm mt-5">
         <tbody>
           {this.state.seasons.map((season,index) => {
-            //console.log(season);
             return (
-              <tr key={index} className={season.isCurrent ? "current" : null}>
-                <td>
-                  <span className="start">{moment(season.startDate).format("YYYY-MM-DD")}</span>
-                  {season.isCurrent ? <span className="now">You are here >>></span> : null}
-                </td>
-                <td>
-                  <span className="name">{season.name.fourByTwo}</span>
+              <tr key={index} className={season.isCurrent ? "current " + season.name.fourByTwo : season.name.fourByTwo}>
+                <td className="name">
+                  <span>{season.name.fourByTwo}</span>
                   <span className="year">{this.getYearSpan(season)}</span>
+                </td>
+                <td className="date">
+                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD")}</span>
+                </td>           
+                <td className="today">
+                  {season.isCurrent ? (
+                      <span 
+                        className="now"
+                        style={{marginTop: this.getPercentThroughEightSeason(season,new Date()) }}>
+                      &lt;&lt;&lt; You are here</span>
+                    ) : null}
                 </td>
               </tr>  
             )
@@ -95,35 +101,59 @@ class ProximateSeasons extends Component {
     
     // Build previous and next seasons
     let previousSeasons = [];
-    let nextSeasons = [];    
-    const nPrevious = Math.floor((n-1)/2);  // opt to give previous seasons one less than next seasons
+    let nextSeasons = [];   
+    
+    /*const nPrevious = Math.floor((n-1)/2);  // opt to give previous seasons one less than next seasons
     const nNext = Math.ceil((n-1)/2); // opt to give next seasons one more than previous seasons
     
-    let previousSeasonDate = new Date(moment(currentSeason.startDate).subtract(2,"day").valueOf());
-    let nextSeasonDate = new Date(moment(currentSeason.endDate).add(2,"day").valueOf());
+    let previousSeasonDate = new Date(moment(currentSeason.dateStart).subtract(2,"day").valueOf());
+    let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
     for (let i = 0; i < nPrevious; i++) {
       let previousSeason = new EightSeason(previousSeasonDate);
       previousSeason.isCurrent = false;
       seasons.unshift(previousSeason);
       // Setup for next loop
-      previousSeasonDate = new Date(moment(previousSeason.startDate).subtract(2,"day").valueOf());
+      previousSeasonDate = new Date(moment(previousSeason.dateStart).subtract(2,"day").valueOf());
     }
     for (let i = 0; i < nNext; i++) {
       let nextSeason = new EightSeason(nextSeasonDate);
       nextSeason.isCurrent = false;
       seasons.push(nextSeason);
       // Setup for next loop
-      nextSeasonDate = new Date(moment(nextSeason.endDate).add(2,"day").valueOf());
+      nextSeasonDate = new Date(moment(nextSeason.dateEnd).add(2,"day").valueOf());
+    }*/
+    
+    const nNext = n - 1;
+    let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
+    for (let i = 0; i < nNext; i++) {
+      let nextSeason = new EightSeason(nextSeasonDate);
+      nextSeason.isCurrent = false;
+      seasons.push(nextSeason);
+      // Setup for next loop
+      nextSeasonDate = new Date(moment(nextSeason.dateEnd).add(2,"day").valueOf());
     }
     
     return seasons;
   }
   getYearSpan(season) {
-    if (season.startYear === season.endYear) {
-      return season.startYear;
+    if (season.yearStart === season.yearEnd) {
+      return season.yearStart;
     } else {
-      return season.startYear + '/' + season.endYear;
+      return season.yearStart + '/' + season.yearEnd;
     }
+  }
+  getPercentThroughEightSeason(eightSeason, date) {
+    let fullSeasonHeight = 100;
+    let start = eightSeason.dateStart.valueOf();
+    let end = eightSeason.dateEnd.valueOf();
+    let now = date.valueOf();
+    
+    if (now <= end && now >= start) {
+      // interpolate
+      let percentage = (now - start) / (end - start);
+      return Math.floor(fullSeasonHeight * percentage) + "px";
+    }
+    return null;
   }
 }
 
