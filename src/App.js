@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import './App.css';
 import moment from 'moment';
 import SunCalc from 'suncalc';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+
+import './App.css';
 import * as EightSeasons from './8seasons.js';
 
 class App extends Component {
@@ -63,39 +64,67 @@ class App extends Component {
 class ProximateSeasons extends Component {
   constructor(props) {
     super(props);
-
-    let currentSeason = EightSeasons.get8SeasonInfo(new Date());
-    let previousSeasonDate = new Date(moment(currentSeason.seasonStart).subtract(2,"day").valueOf());
-    let nextSeasonDate = new Date(moment(currentSeason.seasonEnd).add(2,"day").valueOf());
-    let previousSeason = EightSeasons.get8SeasonInfo(previousSeasonDate);
-    let nextSeason = EightSeasons.get8SeasonInfo(nextSeasonDate);    
-    
-    console.log(previousSeason);
-    console.log(nextSeason);
-    
     this.state = {
-      currentSeason: currentSeason,
-      previousSeason: previousSeason,
-      nextSeason: nextSeason
+      seasons: []
     };
+  }
+  componentWillMount() {
+    const seasons = this.getSeasons(9);
+    this.setState({seasons: seasons});
   }
   render() {
     return (
-      <table><tbody>
-        <tr>
-          <td></td>
-          <td>{this.state.previousSeason.seasonName.name} {this.getYearSpan(this.state.previousSeason)}</td>
-        </tr>
-        <tr className="current">
-          <td>You are here >></td>
-          <td>{this.state.currentSeason.seasonName.name} {this.getYearSpan(this.state.currentSeason)}</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>{this.state.nextSeason.seasonName.name} {this.getYearSpan(this.state.nextSeason)}</td>
-        </tr>
-      </tbody></table>
+      <table>
+        <tbody>
+          {this.state.seasons.map((season,index) => {
+            //console.log(season);
+            return (
+              <tr key={index} className={season.isCurrent ? "current" : null}>
+                <td>
+                  <span className="start">{moment(season.seasonStart).format("YYYY-MM-DD")}</span>
+                  {season.isCurrent ? <span className="now">You are here >>></span> : null}
+                </td>
+                <td>
+                  <span className="name">{season.seasonName.name}</span>
+                  <span className="year">{this.getYearSpan(season)}</span>
+                </td>
+              </tr>  
+            )
+          })}
+        </tbody>
+      </table>
     )
+  }
+  getSeasons(n) {
+    let seasons = [];
+    let currentSeason = EightSeasons.get8SeasonInfo(new Date());
+    currentSeason.isCurrent = true;
+    seasons.push(currentSeason);
+    
+    // Build previous and next seasons
+    let previousSeasons = [];
+    let nextSeasons = [];    
+    const nPrevious = Math.floor((n-1)/2);  // opt to give previous seasons one less than next seasons
+    const nNext = Math.ceil((n-1)/2); // opt to give next seasons one more than previous seasons
+    
+    let previousSeasonDate = new Date(moment(currentSeason.seasonStart).subtract(2,"day").valueOf());
+    let nextSeasonDate = new Date(moment(currentSeason.seasonEnd).add(2,"day").valueOf());
+    for (let i = 0; i < nPrevious; i++) {
+      let previousSeason = EightSeasons.get8SeasonInfo(previousSeasonDate);
+      previousSeason.isCurrent = false;
+      seasons.unshift(previousSeason);
+      // Setup for next loop
+      previousSeasonDate = new Date(moment(previousSeason.seasonStart).subtract(2,"day").valueOf());
+    }
+    for (let i = 0; i < nNext; i++) {
+      let nextSeason = EightSeasons.get8SeasonInfo(nextSeasonDate);
+      nextSeason.isCurrent = false;
+      seasons.push(nextSeason);
+      // Setup for next loop
+      nextSeasonDate = new Date(moment(nextSeason.seasonEnd).add(2,"day").valueOf());
+    }
+    
+    return seasons;
   }
   getYearSpan(season) {
     if (season.seasonStartYear === season.seasonEndYear) {

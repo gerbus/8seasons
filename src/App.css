@@ -1,1 +1,27 @@
+h1 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.2rem;
+}
 
+.seasons tr {
+  vertical-align: middle;
+  height: 50px;
+}
+.seasons td {
+  position: relative;
+  border: 1px solid #aaa;
+}
+.seasons .current {
+  height: 200px;
+}
+.seasons td .start {
+  position: absolute;
+  top: 0;
+  transform:translateY(-50%);
+}
+.seasons td .year {
+  display: block;
+  font-size: 0.8rem;
+}
