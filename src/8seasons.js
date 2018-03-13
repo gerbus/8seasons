@@ -1,112 +1,153 @@
-// https://hermetic.ch/eqsol/eqsol.htm
+/**
+* This class library provides the tools for dealing with an eight season year.
+*  An Eight-season is one of the eight seasons.
+*  Variable naming is consistent with the four-by-two naming convention, 
+*   which is to say that each of the traditional four seasons is divided
+*   into two sub-seasons (i.e. Winter 2).
+*/
 
+// https://hermetic.ch/eqsol/eqsol.htm
 const Solstice = require('../node_modules/astronomia/lib/solstice.js');
 const Julian = require('../node_modules/julian/index.js');
 
-const name = ["Winter 1","Winter 2","Spring 1","Spring 2","Summer 1","Summer 2","Autumn 1","Autumn 2"];
+export class EightSeason {
+  constructor(date) {
+    // Class skeleton
+    this.startYear = null;
+    this.endYear = null;
+    this.startDate = null;
+    this.endDate = null;
+    this.index = null;
+    this.name = {
+      fourByTwo: null,
+      sami: null
+    }
+    
+    // Get all the Eight-season start dates for 
+    //  the year of the supplied date
+    let year = date.getFullYear();
+    let winter2StartDate = getWinter2StartDate(year);
+    let spring1StartDate = getSpring1StartDate(year);
+    let spring2StartDate = getSpring2StartDate(year);
+    let summer1StartDate = getSummer1StartDate(year);
+    let summer2StartDate = getSummer2StartDate(year);
+    let autumn1StartDate = getAutumn1StartDate(year);
+    let autumn2StartDate = getAutumn2StartDate(year);
+    let winter1StartDate = getWinter1StartDate(year);
+
+    // Set default start and end year of the Eight-season
+    this.startYear = year;
+    this.endYear = year;
+    
+    // Run (backwards) through Eight-seasons to find the one 
+    //  containing the provided date
+    if (date >= winter1StartDate) { 
+      // Winter 1, the part near the end of the year
+      this.index = 0;
+      this.startDate = winter1StartDate;
+      this.endYear = year + 1;  // the end of winter 1 will be next year
+      this.endDate = getWinter2StartDate(year + 1);  
+    } else if (date >= autumn2StartDate) {
+      // Autumn 2
+      this.index = 7;
+      this.startDate = autumn2StartDate;
+      this.endDate = winter1StartDate;
+    } else if (date >= autumn1StartDate) {
+      // Autumn 1
+      this.index = 6;
+      this.startDate = autumn1StartDate;
+      this.endDate = autumn2StartDate;
+    } else if (date >= summer2StartDate) {
+      // Summer 2
+      this.index = 5;
+      this.startDate = summer2StartDate;
+      this.endDate = autumn1StartDate;
+    } else if (date >= summer1StartDate) {
+      // Summer 1
+      this.index = 4;
+      this.startDate = summer1StartDate;
+      this.endDate = summer1StartDate;
+    } else if (date >= spring2StartDate) {
+      // Spring 2
+      this.index = 3;
+      this.startDate = spring2StartDate;
+      this.endDate = summer1StartDate;
+    } else if (date >= spring1StartDate) {
+      // Spring 1
+      this.index = 2;
+      this.startDate = spring1StartDate;
+      this.endDate = spring2StartDate;
+    } else if (date >= winter2StartDate) {
+      // Winter 2
+      this.index = 1;
+      this.startDate = winter2StartDate;
+      this.endDate = spring1StartDate;
+    } else {  
+      // Winter 1, the part near the beginning of the year
+      this.index = 0;
+      this.startYear = year - 1;  // the start of winter 1 was last year
+      this.startDate = getWinter1StartDate(year - 1);  
+      this.endDate = winter2StartDate;
+    }
+
+    // Set the name of the containing Eight-season
+    this.name.fourByTwo = fourByTwoName[this.index];
+    this.name.sami = samiName[this.index];
+  }  
+}
+
+const fourByTwoName = ["Winter 1","Winter 2","Spring 1","Spring 2","Summer 1","Summer 2","Autumn 1","Autumn 2"];
 const samiName = ["Winter","Late Winter","Spring","Early Summer","Summer","Late Summer","Autumn","Early Winter"];
 
-export function get8SeasonName(date, offset = 0) {
-  let data = get8SeasonInfo(date);
-  return name[(data.index + offset) % 8];
+export function getWinter1StartDate(year) {
+  return Julian.toDate(Solstice.december(year));
 }
-export function get8SeasonSamiName(date, offset = 0) {
-  let data = get8SeasonInfo(date);
-  return samiName[(data.index + offset) % 8];
-}
-
-export function getWinter1(year) {
-  return Julian.toDate(Solstice.december(year)); 
-}
-export function getSpring1(year) {
+export function getSpring1StartDate(year) {
   return Julian.toDate(Solstice.march(year));
 }
-export function getSummer1(year) {
+export function getSummer1StartDate(year) {
   return Julian.toDate(Solstice.june(year));
 }
-export function getAutumn1(year) {
+export function getAutumn1StartDate(year) {
   return Julian.toDate(Solstice.september(year));
 }
-
-export function getWinter2(year) {
-  let winter1 = getWinter1(year-1);
-  let spring1 = getSpring1(year);
+export function getWinter2StartDate(year) {
+  let winter1 = getWinter1StartDate(year-1);
+  let spring1 = getSpring1StartDate(year);
   return new Date(winter1.getTime() + (spring1.getTime() - winter1.getTime())/2);
 }
-export function getSpring2(year) {
-  let spring1 = getSpring1(year);
-  let summer1 = getSummer1(year);
+export function getSpring2StartDate(year) {
+  let spring1 = getSpring1StartDate(year);
+  let summer1 = getSummer1StartDate(year);
   return new Date(spring1.getTime() + (summer1.getTime() - spring1.getTime())/2);
 }
-export function getSummer2(year) {
-  let summer1 = getSummer1(year);
-  let autumn1 = getAutumn1(year);
+export function getSummer2StartDate(year) {
+  let summer1 = getSummer1StartDate(year);
+  let autumn1 = getAutumn1StartDate(year);
   return new Date(summer1.getTime() + (autumn1.getTime() - summer1.getTime())/2);
 }
-export function getAutumn2(year) {
-  let autumn1 = getAutumn1(year);
-  let winter1 = getWinter1(year);
+export function getAutumn2StartDate(year) {
+  let autumn1 = getAutumn1StartDate(year);
+  let winter1 = getWinter1StartDate(year);
   return new Date(autumn1.getTime() + (winter1.getTime() - autumn1.getTime())/2);
 }
-
-export function get8SeasonInfo(date) {
-  let year = date.getFullYear();
-  let winter2Start = getWinter2(year);
-  let spring1Start = getSpring1(year);
-  let spring2Start = getSpring2(year);
-  let summer1Start = getSummer1(year);
-  let summer2Start = getSummer2(year);
-  let autumn1Start = getAutumn1(year);
-  let autumn2Start = getAutumn2(year);
-  let winter1Start = getWinter1(year);
-  
-  let data = {};
-  data.seasonStartYear = year;
-  data.seasonEndYear = year;
-  // Run (backwards) through dates and return correct info
-  if (date >= winter1Start) { // Today is in winter 1, near the end of the year
-    data.index = 0;
-    data.seasonStart = winter1Start;
-    data.seasonEndYear = year + 1;
-    data.seasonEnd = getWinter2(year + 1);  // the end of winter 1 will be next year
-  } else if (date >= autumn2Start) {
-    data.index = 7;
-    data.seasonStart = autumn2Start;
-    data.seasonEnd = winter1Start;
-  } else if (date >= autumn1Start) {
-    data.index = 6;
-    data.seasonStart = autumn1Start;
-    data.seasonEnd = autumn2Start;
-  } else if (date >= summer2Start) {
-    data.index = 5;
-    data.seasonStart = summer2Start;
-    data.seasonEnd = autumn1Start;
-  } else if (date >= summer1Start) {
-    data.index = 4;
-    data.seasonStart = summer1Start;
-    data.seasonEnd = summer1Start;
-  } else if (date >= spring2Start) {
-    data.index = 3;
-    data.seasonStart = spring2Start;
-    data.seasonEnd = summer1Start;
-  } else if (date >= spring1Start) {
-    data.index = 2;
-    data.seasonStart = spring1Start;
-    data.seasonEnd = spring2Start;
-  } else if (date >= winter2Start) {
-    data.index = 1;
-    data.seasonStart = winter2Start;
-    data.seasonEnd = spring1Start;
-  } else {  // Today is in winter 1, near the beginning of the year
-    data.index = 0;
-    data.seasonStartYear = year - 1;
-    data.seasonStart = getWinter1(year - 1);  // the start of winter 1 was last year
-    data.seasonEnd = winter2Start;
+export function getSeasonStartDateByIndexAndYear(index, year = (new Date()).getFullYear()) {
+  switch (index) {
+    case 0:
+      return getWinter2StartDate(year);
+    case 1:
+      return getSpring1StartDate(year);
+    case 2:
+      return getSpring2StartDate(year);
+    case 3:
+      return getSummer1StartDate(year);
+    case 4:
+      return getSummer2StartDate(year);
+    case 5:
+      return getAutumn1StartDate(year);
+    case 6:
+      return getAutumn2StartDate(year);
+    case 7:
+      return getWinter1StartDate(year);
   }
-  
-  data.seasonName = { 
-    name: name[data.index], 
-    sami: samiName[data.index] };
-  
-  return data;
 }
