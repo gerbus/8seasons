@@ -1,9 +1,10 @@
 /**
 * This class library provides the tools for dealing with an eight season year.
-*  An Eight-season is one of the eight seasons.
-*  Variable naming is consistent with the four-by-two naming convention, 
-*   which is to say that each of the traditional four seasons is divided
-*   into two sub-seasons (i.e. Winter 2).
+*  An Eight-season is one of the eight seasons of the year.
+*  Language in code is consistent with the four-by-two naming convention, 
+*   in which each of the traditional four seasons is divided
+*   into two sub-seasons (i.e. Winter 1 & Winter 2).
+*  Usage: let season = new EightSeason(new Date());
 */
 
 // https://hermetic.ch/eqsol/eqsol.htm

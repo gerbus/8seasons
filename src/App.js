@@ -17,7 +17,7 @@ class App extends Component {
       currentSunrise: null,
       currentSunset: null
     };
-    this.handleTime = this.handleTime.bind(this);
+    //this.handleTime = this.handleTime.bind(this);
   }
   componentWillMount() {
     let today = new Date();
@@ -33,16 +33,16 @@ class App extends Component {
     
     setInterval(this.handleTime, 1000);
   }
-  handleTime() {
+  /*handleTime() {
     let today = new Date();
     this.setState({currentTime: moment(today).format("YYYY-MM-DD HH:mm:ss")});
-  }
+  }*/
   render() {
     return(
       <div className="container">
-        <div className="title">
-          <h1>The 8 Seasons</h1>
-          <h3>I need a higher resolution to my year. The Sami people already did it. There's more to the changing of seasons than you think.</h3>
+        <div className="mt-3">
+          <h1>The Eight Season Year</h1>
+          <p>I need a higher resolution to my year. The Sami people already did it. There's more to the changing of seasons than you think.</p>
         </div>
         <div className="seasons">
           <ProximateSeasons />
@@ -70,7 +70,7 @@ class ProximateSeasons extends Component {
         <tbody>
           {this.state.seasons.map((season,index) => {
             return (
-              <tr key={index} className={season.isCurrent ? "current " + season.name.fourByTwo : season.name.fourByTwo}>
+              <tr key={index} className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}>
                 <td className="name">
                   <span>{season.name.fourByTwo}</span>
                   <span className="year">{this.getYearSpan(season)}</span>
@@ -83,10 +83,11 @@ class ProximateSeasons extends Component {
                       <span 
                         className="now"
                         style={{marginTop: this.getPercentThroughEightSeason(season,new Date()) }}>
-                      &lt;&lt;&lt; You are here</span>
+                        ⟵ Today ({this.getDaysLeft(season,new Date())} days left)
+                      </span>
                     ) : null}
                 </td>
-              </tr>  
+              </tr>
             )
           })}
         </tbody>
@@ -146,12 +147,20 @@ class ProximateSeasons extends Component {
     let fullSeasonHeight = 100;
     let start = eightSeason.dateStart.valueOf();
     let end = eightSeason.dateEnd.valueOf();
-    let now = date.valueOf();
+    let t = date.valueOf();
     
-    if (now <= end && now >= start) {
+    if (t <= end && t >= start) {
       // interpolate
-      let percentage = (now - start) / (end - start);
+      let percentage = (t - start) / (end - start);
       return Math.floor(fullSeasonHeight * percentage) + "px";
+    }
+    return null;
+  }
+  getDaysLeft(eightSeason, date) {
+    console.log(date);
+    console.log(eightSeason.dateEnd);
+    if (date < eightSeason.dateEnd) {
+      return Math.floor((eightSeason.dateEnd - date)/(1000*60*60*24));
     }
     return null;
   }
