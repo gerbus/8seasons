@@ -31,7 +31,7 @@ class App extends Component {
       currentSunset: moment(sunData.sunset).format("HH:mm")
     })
     
-    setInterval(this.handleTime, 1000);
+    //setInterval(this.handleTime, 1000);
   }
   /*handleTime() {
     let today = new Date();
@@ -57,12 +57,18 @@ class ProximateSeasons extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      seasons: []
+      seasons: [],
+      now: new Date()
     };
+    this.handleTime = this.handleTime.bind(this);
   }
   componentWillMount() {
     const seasons = this.getSeasons(9);
     this.setState({seasons: seasons});
+    setInterval(this.handleTime, 1000 * 60);  // update once a minute
+  }
+  handleTime() {
+    this.setState({now: new Date()});
   }
   render() {
     return (
@@ -82,8 +88,8 @@ class ProximateSeasons extends Component {
                   {season.isCurrent ? (
                       <span 
                         className="now"
-                        style={{marginTop: this.getPercentThroughEightSeason(season,new Date()) }}>
-                        ⟵ Today ({this.getDaysLeft(season,new Date())} days left)
+                        style={{marginTop: this.getPercentThroughEightSeason(season,this.state.now) }}>
+                        ⟵ Today ({this.getDaysLeft(season,this.state.now)} days left)
                       </span>
                     ) : null}
                 </td>
@@ -160,7 +166,7 @@ class ProximateSeasons extends Component {
     console.log(date);
     console.log(eightSeason.dateEnd);
     if (date < eightSeason.dateEnd) {
-      return Math.floor((eightSeason.dateEnd - date)/(1000*60*60*24));
+      return ((eightSeason.dateEnd - date)/(1000*60*60*24)).toFixed(1);
     }
     return null;
   }
