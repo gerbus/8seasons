@@ -1,28 +1,73 @@
+html {
+  background: #000 url("earth_night_rotate_lrg.jpg") no-repeat -300px -100px;
+}
+@media (min-width:576px) { 
+  html {
+    background-position-x: -150px
+  }
+}
+body {
+  background-color: transparent;
+}
+
 h1 {
   font-size: 2rem;
+  color: #77e;
 }
-h3 {
-  font-size: 1.2rem;
+p {
+  color: #448;
 }
 
 .seasons tr {
   height: 50px;
   font-size: 0.8rem;
-  color: #666;
+  color: #66c;
 }
 .seasons tr.current {
   height: 100px;
   font-size: 1.2rem;
+}
+.seasons tr.current td.name { 
+  border: none;
   color: black;
 }
+.seasons tr.current td.date { color: #66c; }
+.seasons tr.current.Winter1 td.name { 
+  background: linear-gradient(white,#333); 
+}
+.seasons tr.current.Winter2 td.name { 
+  background: linear-gradient(#333,#f88);
+}
+.seasons tr.current.Spring1 td.name { 
+  background: linear-gradient(#f88,#0ec029);
+}
+.seasons tr.current.Spring2 td.name { 
+  background: linear-gradient(#0f0,cyan); 
+}
+.seasons tr.current.Summer1 td.name { 
+  background: linear-gradient(cyan,yellow); 
+}
+.seasons tr.current.Summer2 td.name { 
+  background: linear-gradient(yellow,orange); 
+}
+.seasons tr.current.Autumn1 td.name { 
+  background: linear-gradient(orange,brown); 
+}
+.seasons tr.current.Autumn2 td.name { 
+  background: linear-gradient(brown,white); 
+}
+
 .seasons tr.current + tr {
   height: 75px;
   font-size: 1.0rem;
-  color: #444;
+  color: #77e;
 }
+.seasons tr.current + tr td.date { color: #77e; }
+.seasons tr.current + tr + tr td.date { color: #66c; }
 
 .seasons td {
   position: relative;
+  border-color: #448;
 }
 .seasons td.name {
   vertical-align: middle;
@@ -38,34 +83,26 @@ h3 {
 .seasons td.today {
   border: none;
   font-size: 0.7rem;
+  text-shadow: 1px 1px 0 black;
 }
 .seasons td.date {
   width: 90px;
+  color: #448;
 }
 .seasons td.date .start {
   position: absolute;
   top: 0;
+  left: 10px;
   transform:translateY(-50%);
 }
-.seasons td.today .now {
+.seasons tr.current td.today .now {
   position: absolute;
   top: 0;
   transform: translateY(-50%);
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: #88f;
 }
 
-/* Color for the current season */
-.seasons tr.current.Winter1 { background: linear-gradient(white,grey); }
-.seasons tr.current.Winter2 { background: linear-gradient(grey,pink); }
-.seasons tr.current.Spring1 { background: linear-gradient(pink,#0f0); }
-.seasons tr.current.Spring2 { background: linear-gradient(#0f0,cyan); }
-.seasons tr.current.Summer1 { background: linear-gradient(cyan,yellow); }
-.seasons tr.current.Summer2 { background: linear-gradient(yellow,orange); }
-.seasons tr.current.Autumn1 { background: linear-gradient(orange,brown); }
-.seasons tr.current.Autumn2 { background: linear-gradient(brown,white); }
-.seasons tr.current td.date,
-.seasons tr.current td.today {
-  background: white;
-}
+
