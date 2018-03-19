@@ -82,14 +82,14 @@ class ProximateSeasons extends Component {
                   <span className="year">{this.getYearSpan(season)}</span>
                 </td>
                 <td className="date">
-                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD")}</span>
+                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm")}</span>
                 </td>           
                 <td className="today">
                   {season.isCurrent ? (
                       <span 
                         className="now"
                         style={{marginTop: this.getPercentThroughEightSeason(season,this.state.now) }}>
-                        ⟵ Today ({this.getDaysLeft(season,this.state.now)} days left)
+                        ⟵ Now ({this.getDaysLeft(season,this.state.now)} left)
                       </span>
                     ) : null}
                 </td>
@@ -166,7 +166,19 @@ class ProximateSeasons extends Component {
     console.log(date);
     console.log(eightSeason.dateEnd);
     if (date < eightSeason.dateEnd) {
-      return ((eightSeason.dateEnd - date)/(1000*60*60*24)).toFixed(1);
+      const msLeft = eightSeason.dateEnd - date;
+      const daysLeft = msLeft/(1000*60*60*24);
+      if (daysLeft > 1) {
+        return daysLeft.toFixed(1) + " days";
+      } else {
+        const hoursLeft = msLeft/(1000*60*60);
+        if (hoursLeft > 1) {
+          return Math.floor(hoursLeft).toFixed(0) + " hours";
+        } else {
+          const minsLeft = (hoursLeft % 1)*60;
+          return Math.floor(minsLeft).toFixed(0) + " minutes";
+        }
+      }
     }
     return null;
   }
