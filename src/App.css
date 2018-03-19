@@ -3,13 +3,19 @@ html {
 }
 @media (min-width:576px) { 
   html {
-    background-position-x: -150px
+    background-position-x: -150px;
+    background-position-y: 50px;
   }
 }
 body {
   background-color: transparent;
 }
-
+@media (min-width: 1280px) {
+  .container {
+    margin-left: 70px;
+  }
+}
+  
 h1 {
   font-size: 2rem;
   color: #77e;
