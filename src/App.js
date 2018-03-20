@@ -63,12 +63,11 @@ class ProximateSeasons extends Component {
     this.handleTime = this.handleTime.bind(this);
   }
   componentWillMount() {
-    const seasons = this.getSeasons(9);
-    this.setState({seasons: seasons});
-    setInterval(this.handleTime, 1000 * 60);  // update once a minute
+    setInterval(this.handleTime, 1000);  // update once every second
   }
   handleTime() {
-    this.setState({now: new Date()});
+    const seasons = this.getSeasons(9);
+    this.setState({seasons: seasons, now: new Date()});
   }
   render() {
     return (
@@ -163,8 +162,8 @@ class ProximateSeasons extends Component {
     return null;
   }
   getDaysLeft(eightSeason, date) {
-    console.log(date);
-    console.log(eightSeason.dateEnd);
+    //console.log(date);
+    //console.log(eightSeason.dateEnd);
     if (date < eightSeason.dateEnd) {
       const msLeft = eightSeason.dateEnd - date;
       const daysLeft = msLeft/(1000*60*60*24);
@@ -173,10 +172,11 @@ class ProximateSeasons extends Component {
       } else {
         const hoursLeft = msLeft/(1000*60*60);
         if (hoursLeft > 1) {
-          return Math.floor(hoursLeft).toFixed(0) + " hours";
+          return Math.floor(hoursLeft) + " hours";
         } else {
           const minsLeft = (hoursLeft % 1)*60;
-          return Math.floor(minsLeft).toFixed(0) + " minutes";
+          const secsLeft = (minsLeft % 1)*60;
+          return Math.floor(minsLeft).toFixed(0).padStart(2,"0") + ":" + Math.floor(secsLeft).toFixed(0).padStart(2,"0");
         }
       }
     }
