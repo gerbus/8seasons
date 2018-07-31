@@ -1,3 +1,4 @@
+/* Page-level */
 html {
   background: #000 url("earth_night_rotate_lrg.jpg") no-repeat -300px -100px fixed;
 }
@@ -24,53 +25,12 @@ p {
   color: #448;
 }
 
+/* Seasons */
 .seasons tr {
   height: 50px;
   font-size: 0.8rem;
   color: #66c;
 }
-.seasons tr.current {
-  height: 100px;
-  font-size: 1.2rem;
-}
-.seasons tr.current td.name { 
-  border: none;
-  color: black;
-}
-.seasons tr.current td.date { color: #66c; }
-.seasons tr.current.Winter1 td.name { 
-  background: linear-gradient(white,#333); 
-}
-.seasons tr.current.Winter2 td.name { 
-  background: linear-gradient(#333,#f88);
-}
-.seasons tr.current.Spring1 td.name { 
-  background: linear-gradient(#f88,#0ec029);
-}
-.seasons tr.current.Spring2 td.name { 
-  background: linear-gradient(#0f0,cyan); 
-}
-.seasons tr.current.Summer1 td.name { 
-  background: linear-gradient(cyan,yellow); 
-}
-.seasons tr.current.Summer2 td.name { 
-  background: linear-gradient(yellow,orange); 
-}
-.seasons tr.current.Autumn1 td.name { 
-  background: linear-gradient(orange,brown); 
-}
-.seasons tr.current.Autumn2 td.name { 
-  background: linear-gradient(brown,white); 
-}
-
-.seasons tr.current + tr {
-  height: 75px;
-  font-size: 1.0rem;
-  color: #77e;
-}
-.seasons tr.current + tr td.date { color: #77e; }
-.seasons tr.current + tr + tr td.date { color: #66c; }
-
 .seasons td {
   position: relative;
   border-color: #448;
@@ -110,5 +70,78 @@ p {
   align-items: center;
   color: #99f;
 }
+
+/* Current and Hovered Seasons */
+.seasons tr.current {
+  height: 100px;
+  font-size: 1.2rem;
+}
+.seasons tr.current td.name,
+.seasons tr:hover td.name { 
+  border: none;
+  color: black;
+}
+.seasons tr:hover {
+  cursor: pointer;
+}
+.seasons tr.current + tr td.name,
+.seasons tr:hover + tr td.name {
+  border: none;
+}
+.seasons tr.current td.date {
+  color: #66c; 
+}
+.seasons tr.current.Winter1 td.name,
+.seasons tr.Winter1:hover td.name {
+  background: linear-gradient(white,#333); 
+}
+.seasons tr.current.Winter2 td.name,
+.seasons tr.Winter2:hover td.name {
+  background: linear-gradient(#333,#f88);
+}
+.seasons tr.current.Spring1 td.name,
+.seasons tr.Spring1:hover td.name {
+  background: linear-gradient(#f88,#0ec029);
+}
+.seasons tr.current.Spring2 td.name,
+.seasons tr.Spring2:hover td.name {
+  background: linear-gradient(#0f0,cyan); 
+}
+.seasons tr.current.Summer1 td.name,
+.seasons tr.Summer1:hover td.name {
+  background: linear-gradient(cyan,yellow); 
+}
+.seasons tr.current.Summer2 td.name,
+.seasons tr.Summer2:hover td.name {
+  background: linear-gradient(yellow,orange); 
+}
+.seasons tr.current.Autumn1 td.name,
+.seasons tr.Autumn1:hover td.name {
+  background: linear-gradient(orange,brown); 
+}
+.seasons tr.current.Autumn2 td.name,
+.seasons tr.Autumn2:hover td.name {
+  background: linear-gradient(brown,white); 
+}
+
+/* Upcoming Seasons */
+.seasons tr.current + tr {
+  height: 75px;
+  font-size: 1.0rem;
+  color: #77e;
+}
+.seasons tr:hover td.date,
+.seasons tr:hover + tr td.date {
+  color: #77e;
+}
+.seasons tr.current + tr td.date { 
+  color: #77e; 
+}
+.seasons tr.current + tr + tr td.date { 
+  color: #66c; 
+}
+
+
+
 
 

@@ -8,6 +8,7 @@ import './App.css';
 import { EightSeason } from './8seasons.js';
 
 
+/** The main App */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +18,6 @@ class App extends Component {
       currentSunrise: null,
       currentSunset: null
     };
-    //this.handleTime = this.handleTime.bind(this);
   }
   componentWillMount() {
     let today = new Date();
@@ -30,19 +30,13 @@ class App extends Component {
       currentSunrise: moment(sunData.sunrise).format("HH:mm"),
       currentSunset: moment(sunData.sunset).format("HH:mm")
     })
-    
-    //setInterval(this.handleTime, 1000);
   }
-  /*handleTime() {
-    let today = new Date();
-    this.setState({currentTime: moment(today).format("YYYY-MM-DD HH:mm:ss")});
-  }*/
   render() {
     return(
       <div className="container">
         <div className="mt-3">
           <h1>The Eight Season Year</h1>
-          <p>I need a higher resolution to my year. The Sami people already did it. There's more to the changing of seasons than you think.</p>
+          <p>There's more to the changing of seasons than you think.</p>
         </div>
         <div className="seasons">
           <ProximateSeasons />
@@ -53,6 +47,7 @@ class App extends Component {
 }
 
 
+/** The list of 8-seasons */
 class ProximateSeasons extends Component {
   constructor(props) {
     super(props);
@@ -75,23 +70,28 @@ class ProximateSeasons extends Component {
         <tbody>
           {this.state.seasons.map((season,index) => {
             return (
-              <tr key={index} className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}>
-                <td className="name">
+              <tr 
+                key={index} 
+                className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}
+                >
+                <td 
+                  className="name"
+                  >
                   <span>{season.name.fourByTwo}</span>
                   <span className="year">{this.getYearSpan(season)}</span>
                 </td>
                 <td className="date">
-                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm")}</span>
+                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm zz")}</span>
                 </td>           
-                <td className="today">
-                  {season.isCurrent ? (
+                {season.isCurrent ? (
+                  <td className="today">
                       <span 
                         className="now"
                         style={{marginTop: this.getPercentThroughEightSeason(season,this.state.now) }}>
                         ⟵ Now ({this.getDaysLeft(season,this.state.now)} left)
                       </span>
-                    ) : null}
-                </td>
+                  </td>                    
+                ) : null}
               </tr>
             )
           })}
@@ -106,7 +106,7 @@ class ProximateSeasons extends Component {
     seasons.push(currentSeason);
     
     // Build previous and next seasons
-    let previousSeasons = [];
+    //let previousSeasons = [];
     let nextSeasons = [];   
     
     /*const nPrevious = Math.floor((n-1)/2);  // opt to give previous seasons one less than next seasons
