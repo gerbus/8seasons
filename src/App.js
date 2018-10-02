@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import SunCalc from 'suncalc';
-import eightSeason from './8seasons.js';
+//import moment from 'moment';
+//import SunCalc from 'suncalc';
+//import eightSeason from './8seasons.js';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
@@ -9,7 +9,7 @@ import ProximateSeasons from './components/ProximateSeasons';
 
 /** The main App */
 class App extends Component {
-  constructor(props) {
+  /*constructor(props) {
     super(props);
     this.state = {
       current8season: null,
@@ -17,8 +17,8 @@ class App extends Component {
       currentSunrise: null,
       currentSunset: null
     };
-  }
-  componentWillMount() {
+  }*/
+  /*componentWillMount() {
     let today = new Date();
     let sunData =  SunCalc.getTimes(today,49.2827,-123.1207);
     let daylightMilliseconds = sunData.sunset - sunData.sunrise;
@@ -29,7 +29,7 @@ class App extends Component {
       currentSunrise: moment(sunData.sunrise).format("HH:mm"),
       currentSunset: moment(sunData.sunset).format("HH:mm")
     })
-  }
+  }*/
   render() {
     return(
       <div className="container">

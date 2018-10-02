@@ -150,5 +150,7 @@ export function getSeasonStartDateByIndexAndYear(index, year = (new Date()).getF
       return getAutumn2StartDate(year);
     case 7:
       return getWinter1StartDate(year);
+    default:
+      return null;
   }
 }
