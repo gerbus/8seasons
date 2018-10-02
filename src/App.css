@@ -1,6 +1,6 @@
 /* Page-level */
 html {
-  background: #000 url("earth_night_rotate_lrg.jpg") no-repeat -300px -100px fixed;
+  background: #000 url("images/earth_night_rotate_lrg.jpg") no-repeat -300px -100px fixed;
 }
 @media (min-width:576px) { 
   html {
@@ -131,7 +131,9 @@ p {
   color: #77e;
 }
 .seasons tr:hover td.date,
-.seasons tr:hover + tr td.date {
+.seasons tr:hover + tr td.date,
+.seasons tr.current + tr:hover + tr td.date,
+.seasons tr.current + tr + tr:hover td.date {
   color: #77e;
 }
 .seasons tr.current + tr td.date { 
