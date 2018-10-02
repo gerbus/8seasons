@@ -20,35 +20,13 @@ class ProximateSeasons extends Component {
     this.setState({seasons: seasons, now: new Date()});
   }
   render() {
+    let { now } = this.state;
+    
     return (
       <table className="table table-sm mt-5">
         <tbody>
           {this.state.seasons.map((season,index) => {
-            return (
-              <tr 
-                key={index} 
-                className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}
-                >
-                <td 
-                  className="name"
-                  >
-                  <span>{season.name.fourByTwo}</span>
-                  <span className="year">{this.getYearSpan(season)}</span>
-                </td>
-                <td className="date">
-                  <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm zz")}</span>
-                </td>           
-                {season.isCurrent ? (
-                  <td className="today">
-                      <span 
-                        className="now"
-                        style={{marginTop: this.getPercentThroughEightSeason(season,this.state.now) }}>
-                        ⟵ Now ({this.getDaysLeft(season,this.state.now)} left)
-                      </span>
-                  </td>                    
-                ) : null}
-              </tr>
-            )
+            return <Season season={season} index={index} now={now} />
           })}
         </tbody>
       </table>
@@ -96,25 +74,37 @@ class ProximateSeasons extends Component {
     
     return seasons;
   }
-  getYearSpan(season) {
-    if (season.yearStart === season.yearEnd) {
-      return season.yearStart;
-    } else {
-      return season.yearStart + '/' + season.yearEnd;
-    }
-  }
-  getPercentThroughEightSeason(eightSeason, date) {
-    let fullSeasonHeight = 100;
-    let start = eightSeason.dateStart.valueOf();
-    let end = eightSeason.dateEnd.valueOf();
-    let t = date.valueOf();
+}
+
+class Season extends Component {
+  render() {
+    let {season, index, now} = this.props;
     
-    if (t <= end && t >= start) {
-      // interpolate
-      let percentage = (t - start) / (end - start);
-      return Math.floor(fullSeasonHeight * percentage) + "px";
-    }
-    return null;
+    return (
+      <tr 
+        key={index} 
+        className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}
+        >
+        <td 
+          className="name"
+          >
+          <span>{season.name.fourByTwo}</span>
+          <span className="year">{this.getYearSpan(season)}</span>
+        </td>
+        <td className="date">
+          <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm zz")}</span>
+        </td>           
+        {season.isCurrent ? (
+          <td className="today">
+              <span 
+                className="now"
+                style={{marginTop: this.getPercentThroughEightSeason(season,now) }}>
+                ⟵ Now ({this.getDaysLeft(season,now)} left)
+              </span>
+          </td>                    
+        ) : null}
+      </tr>
+    );
   }
   getDaysLeft(eightSeason, date) {
     //console.log(date);
@@ -136,6 +126,26 @@ class ProximateSeasons extends Component {
       }
     }
     return null;
+  }
+  getPercentThroughEightSeason(eightSeason, date) {
+    let fullSeasonHeight = 100;
+    let start = eightSeason.dateStart.valueOf();
+    let end = eightSeason.dateEnd.valueOf();
+    let t = date.valueOf();
+    
+    if (t <= end && t >= start) {
+      // interpolate
+      let percentage = (t - start) / (end - start);
+      return Math.floor(fullSeasonHeight * percentage) + "px";
+    }
+    return null;
+  }
+  getYearSpan(season) {
+    if (season.yearStart === season.yearEnd) {
+      return season.yearStart;
+    } else {
+      return season.yearStart + '/' + season.yearEnd;
+    }
   }
 }
 
