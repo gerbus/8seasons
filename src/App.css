@@ -1,28 +1,149 @@
-.App {
+/* Page-level */
+html {
+  background: #000 url("images/earth_night_rotate_lrg.jpg") no-repeat -300px -100px fixed;
+}
+@media (min-width:576px) { 
+  html {
+    background-position-x: -150px;
+    background-position-y: 50px;
+  }
+}
+body {
+  background-color: transparent;
+}
+@media (min-width: 1280px) {
+  .container {
+    margin-left: 70px;
+  }
+}
+  
+h1 {
+  font-size: 2rem;
+  color: #77e;
+}
+p {
+  color: #448;
+}
+
+/* Seasons */
+.seasons tr {
+  height: 50px;
+  font-size: 0.8rem;
+  color: #66c;
+}
+.seasons td {
+  position: relative;
+  border-color: #448;
+}
+.seasons td.name {
+  vertical-align: middle;
   text-align: center;
+  width: 95px;
+}
+.seasons td.name .year {
+  display: block;
+  font-size: 0.7em;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.seasons td.date,
+.seasons td.today {
+  border: none;
+  font-size: 0.7rem;
+  text-shadow: 1px 1px 0 black;
+}
+.seasons td.date {
+  width: 90px;
+  color: #448;
+}
+.seasons td.date .start {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  transform:translateY(-50%);
+}
+.seasons tr.current td.today .now {
+  position: absolute;
+  top: 0;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #99f;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
+/* Current and Hovered Seasons */
+.seasons tr.current {
+  height: 100px;
+  font-size: 1.2rem;
+}
+.seasons tr.current td.name,
+.seasons tr:hover td.name { 
+  border: none;
+  color: black;
+}
+.seasons tr:hover {
+  cursor: pointer;
+}
+.seasons tr.current + tr td.name,
+.seasons tr:hover + tr td.name {
+  border: none;
+}
+.seasons tr.current td.date {
+  color: #66c; 
+}
+.seasons tr.current.Winter1 td.name,
+.seasons tr.Winter1:hover td.name {
+  background: linear-gradient(white,#333); 
+}
+.seasons tr.current.Winter2 td.name,
+.seasons tr.Winter2:hover td.name {
+  background: linear-gradient(#333,#f88);
+}
+.seasons tr.current.Spring1 td.name,
+.seasons tr.Spring1:hover td.name {
+  background: linear-gradient(#f88,#0ec029);
+}
+.seasons tr.current.Spring2 td.name,
+.seasons tr.Spring2:hover td.name {
+  background: linear-gradient(#0f0,cyan); 
+}
+.seasons tr.current.Summer1 td.name,
+.seasons tr.Summer1:hover td.name {
+  background: linear-gradient(cyan,yellow); 
+}
+.seasons tr.current.Summer2 td.name,
+.seasons tr.Summer2:hover td.name {
+  background: linear-gradient(yellow,orange); 
+}
+.seasons tr.current.Autumn1 td.name,
+.seasons tr.Autumn1:hover td.name {
+  background: linear-gradient(orange,brown); 
+}
+.seasons tr.current.Autumn2 td.name,
+.seasons tr.Autumn2:hover td.name {
+  background: linear-gradient(brown,white); 
 }
 
-.App-title {
-  font-size: 1.5em;
+/* Upcoming Seasons */
+.seasons tr.current + tr {
+  height: 75px;
+  font-size: 1.0rem;
+  color: #77e;
+}
+.seasons tr:hover td.date,
+.seasons tr:hover + tr td.date,
+.seasons tr.current + tr:hover + tr td.date,
+.seasons tr.current + tr + tr:hover td.date {
+  color: #77e;
+}
+.seasons tr.current + tr td.date { 
+  color: #77e; 
+}
+.seasons tr.current + tr + tr td.date { 
+  color: #66c; 
 }
 
-.App-intro {
-  font-size: large;
-}
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+
+
+
