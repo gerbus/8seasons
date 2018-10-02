@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import SunCalc from 'suncalc';
-import { EightSeason } from './8seasons.js';
+import eightSeason from './8seasons.js';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
@@ -24,7 +24,7 @@ class App extends Component {
     let daylightMilliseconds = sunData.sunset - sunData.sunrise;
     
     this.setState({
-      current8season: new EightSeason(today),
+      current8season: new eightSeason(today),
       currentDaylightHours: moment.duration(daylightMilliseconds).hours() + " hours " + moment.duration(daylightMilliseconds).minutes() + " minutes",
       currentSunrise: moment(sunData.sunrise).format("HH:mm"),
       currentSunset: moment(sunData.sunset).format("HH:mm")

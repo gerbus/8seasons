@@ -11,7 +11,7 @@
 const Solstice = require('../node_modules/astronomia/lib/solstice.js');
 const Julian = require('../node_modules/julian/index.js');
 
-export class EightSeason {
+export default class eightSeason {
   constructor(date) {
     // Class skeleton
     this.yearStart = null;
