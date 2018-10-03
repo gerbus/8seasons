@@ -8,18 +8,37 @@ import Season from './components/Season';
 class ProximateSeasons extends Component {
   constructor(props) {
     super(props);
+    
+    const now = new Date();
+    const seasons = this.getSeasons(9);
+    
     this.state = {
-      seasons: [],
-      now: new Date()
+      now: now,
+      seasons: seasons,
+      currentSeason: seasons[0]      
     };
+    
     this.handleTime = this.handleTime.bind(this);
   }
   componentWillMount() {
     setInterval(this.handleTime, 1000);  // update once every second
   }
   handleTime() {
-    const seasons = this.getSeasons(9);
-    this.setState({seasons: seasons, now: new Date()});
+    const now = new Date();
+    const currentSeason = new EightSeason(now);
+    let newState = {
+      now: now
+    }
+    
+    // Check if the current season just changed
+    //  (update more of state if so)
+    if (currentSeason.dateStart !== this.state.currentSeason.dateStart) {
+      const seasons = this.getSeasons(9, now);
+      newState.seasons = seasons;
+      newState.currentSeason = currentSeason;
+    }
+    
+    this.setState(newState);
   }
   render() {
     let { now } = this.state;
@@ -34,9 +53,9 @@ class ProximateSeasons extends Component {
       </table>
     )
   }
-  getSeasons(n) {
+  getSeasons(n, date = new Date()) {
     let seasons = [];
-    let currentSeason = new EightSeason(new Date());
+    let currentSeason = new EightSeason(date);
     currentSeason.isCurrent = true;
     seasons.push(currentSeason);
     
@@ -47,7 +66,7 @@ class ProximateSeasons extends Component {
       let nextSeason = new EightSeason(nextSeasonDate);
       nextSeason.isCurrent = false;
       seasons.push(nextSeason);
-      // Setup for next loop
+      // Setup for next season
       nextSeasonDate = new Date(moment(nextSeason.dateEnd).add(2,"day").valueOf());
     }
     

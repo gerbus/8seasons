@@ -18,7 +18,7 @@ class Season extends Component {
         </td>
         <td className="date">
           <span className="start">{moment(season.dateStart).format("YYYY-MMM-DD HH:mm zz")}</span>
-        </td>           
+        </td>
         {season.isCurrent ? (
           <td className="today">
               <span 
@@ -32,8 +32,6 @@ class Season extends Component {
     );
   }
   getDaysLeft(eightSeason, date) {
-    //console.log(date);
-    //console.log(eightSeason.dateEnd);
     if (date < eightSeason.dateEnd) {
       const msLeft = eightSeason.dateEnd - date;
       const daysLeft = msLeft/(1000*60*60*24);
