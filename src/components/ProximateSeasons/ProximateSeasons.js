@@ -40,30 +40,7 @@ class ProximateSeasons extends Component {
     currentSeason.isCurrent = true;
     seasons.push(currentSeason);
     
-    // Build previous and next seasons
-    //let previousSeasons = [];
-    //let nextSeasons = [];   
-    
-    /*const nPrevious = Math.floor((n-1)/2);  // opt to give previous seasons one less than next seasons
-    const nNext = Math.ceil((n-1)/2); // opt to give next seasons one more than previous seasons
-    
-    let previousSeasonDate = new Date(moment(currentSeason.dateStart).subtract(2,"day").valueOf());
-    let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
-    for (let i = 0; i < nPrevious; i++) {
-      let previousSeason = new EightSeason(previousSeasonDate);
-      previousSeason.isCurrent = false;
-      seasons.unshift(previousSeason);
-      // Setup for next loop
-      previousSeasonDate = new Date(moment(previousSeason.dateStart).subtract(2,"day").valueOf());
-    }
-    for (let i = 0; i < nNext; i++) {
-      let nextSeason = new EightSeason(nextSeasonDate);
-      nextSeason.isCurrent = false;
-      seasons.push(nextSeason);
-      // Setup for next loop
-      nextSeasonDate = new Date(moment(nextSeason.dateEnd).add(2,"day").valueOf());
-    }*/
-    
+    // Build upcoming seasons
     const nNext = n - 1;
     let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
     for (let i = 0; i < nNext; i++) {
