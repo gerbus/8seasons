@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import eightSeason from './../../8seasons.js';
+import EightSeason from './../../8seasons.js';
 import Season from './components/Season';
 
 
@@ -28,7 +28,7 @@ class ProximateSeasons extends Component {
       <table className="table table-sm mt-5">
         <tbody>
           {this.state.seasons.map((season,index) => {
-            return <Season season={season} index={index} now={now} />
+            return <Season season={season} now={now} key={index} />
           })}
         </tbody>
       </table>
@@ -36,7 +36,7 @@ class ProximateSeasons extends Component {
   }
   getSeasons(n) {
     let seasons = [];
-    let currentSeason = new eightSeason(new Date());
+    let currentSeason = new EightSeason(new Date());
     currentSeason.isCurrent = true;
     seasons.push(currentSeason);
     
@@ -50,14 +50,14 @@ class ProximateSeasons extends Component {
     let previousSeasonDate = new Date(moment(currentSeason.dateStart).subtract(2,"day").valueOf());
     let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
     for (let i = 0; i < nPrevious; i++) {
-      let previousSeason = new eightSeason(previousSeasonDate);
+      let previousSeason = new EightSeason(previousSeasonDate);
       previousSeason.isCurrent = false;
       seasons.unshift(previousSeason);
       // Setup for next loop
       previousSeasonDate = new Date(moment(previousSeason.dateStart).subtract(2,"day").valueOf());
     }
     for (let i = 0; i < nNext; i++) {
-      let nextSeason = new eightSeason(nextSeasonDate);
+      let nextSeason = new EightSeason(nextSeasonDate);
       nextSeason.isCurrent = false;
       seasons.push(nextSeason);
       // Setup for next loop
@@ -67,7 +67,7 @@ class ProximateSeasons extends Component {
     const nNext = n - 1;
     let nextSeasonDate = new Date(moment(currentSeason.dateEnd).add(2,"day").valueOf());
     for (let i = 0; i < nNext; i++) {
-      let nextSeason = new eightSeason(nextSeasonDate);
+      let nextSeason = new EightSeason(nextSeasonDate);
       nextSeason.isCurrent = false;
       seasons.push(nextSeason);
       // Setup for next loop

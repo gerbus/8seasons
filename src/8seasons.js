@@ -1,17 +1,26 @@
 /**
 * This class library provides the tools for dealing with an eight season year.
-*  An Eight-season is one of the eight seasons of the year.
-*  Language in code is consistent with the four-by-two naming convention, 
+*  An "Eight-season" is one of the eight seasons of the year.
+*  Language in this code is consistent with the four-by-two naming convention, 
 *   in which each of the traditional four seasons is divided
 *   into two sub-seasons (i.e. Winter 1 & Winter 2).
 *  Usage: let season = new EightSeason(new Date());
 */
 
-// https://hermetic.ch/eqsol/eqsol.htm
-const Solstice = require('../node_modules/astronomia/lib/solstice.js');
-const Julian = require('../node_modules/julian/index.js');
 
-export default class eightSeason {
+// Externals
+// https://hermetic.ch/eqsol/eqsol.htm
+const solstice = require('../node_modules/astronomia/lib/solstice.js');
+const julian = require('../node_modules/julian/index.js');
+
+
+// Constants
+const fourByTwoName = ["Winter 1","Winter 2","Spring 1","Spring 2","Summer 1","Summer 2","Autumn 1","Autumn 2"];
+const samiName = ["Winter","Late Winter","Spring","Early Summer","Summer","Late Summer","Autumn","Early Winter"];
+
+
+// EightSeason Class
+export default class EightSeason {
   constructor(date) {
     // Class skeleton
     this.yearStart = null;
@@ -37,11 +46,12 @@ export default class eightSeason {
     let winter1StartDate = getWinter1StartDate(year);
 
     // Set default start and end year of the Eight-season
+    //  (will only differ from each other in Winter 1)
     this.yearStart = year;
     this.yearEnd = year;
     
-    // Run (backwards) through Eight-seasons to find the one 
-    //  containing the provided date
+    // Look (backwards) through Eight-seasons 
+    //  to find the one containing the provided date
     if (date >= winter1StartDate) { 
       // Winter 1, the part near the end of the year
       this.index = 0;
@@ -97,20 +107,19 @@ export default class eightSeason {
   }  
 }
 
-const fourByTwoName = ["Winter 1","Winter 2","Spring 1","Spring 2","Summer 1","Summer 2","Autumn 1","Autumn 2"];
-const samiName = ["Winter","Late Winter","Spring","Early Summer","Summer","Late Summer","Autumn","Early Winter"];
 
+// Helper Functions
 export function getWinter1StartDate(year) {
-  return Julian.toDate(Solstice.december(year));
+  return julian.toDate(solstice.december(year));
 }
 export function getSpring1StartDate(year) {
-  return Julian.toDate(Solstice.march(year));
+  return julian.toDate(solstice.march(year));
 }
 export function getSummer1StartDate(year) {
-  return Julian.toDate(Solstice.june(year));
+  return julian.toDate(solstice.june(year));
 }
 export function getAutumn1StartDate(year) {
-  return Julian.toDate(Solstice.september(year));
+  return julian.toDate(solstice.september(year));
 }
 export function getWinter2StartDate(year) {
   let winter1 = getWinter1StartDate(year-1);

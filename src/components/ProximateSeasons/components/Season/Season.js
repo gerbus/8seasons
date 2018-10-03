@@ -4,11 +4,10 @@ import moment from 'moment';
 
 class Season extends Component {
   render() {
-    let {season, index, now} = this.props;
+    let {season, now} = this.props;
     
     return (
-      <tr 
-        key={index} 
+      <tr
         className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}
         >
         <td 
