@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import './Season.css';
 
 
 class Season extends Component {
   render() {
     let {season, now} = this.props;
+    let className = (season.isCurrent ? "current " : '') + "season " + season.name.fourByTwo.replace(/ /g,'');
     
     return (
       <tr
-        className={season.isCurrent ? "current " + season.name.fourByTwo.replace(/ /g,'') : season.name.fourByTwo.replace(/ /g,'')}
+        className={className}
         >
         <td 
           className="name"
