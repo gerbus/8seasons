@@ -1,0 +1,89 @@
+Attempts at putting together a slowly rotating "black marble" earth background
+
+Video (.mov) from NASA
+  https://visibleearth.nasa.gov/images/79803/night-lights-2012-the-black-marble
+
+Attempt 1
+  Slow to Quarter Speed
+    ffmpeg -i earth_night_rotate_1080.h264.mov -filter:v "setpts=4.0*PTS" earth_night_rotate_1080.h264_quarter_speed.mp4
+    Output
+      is a file where the duration between timestamps of successive frames is 4 times longer
+      is a file with the same number of frames
+      is a file with the same 30fps framerate (strangely)
+      is a video that is 4 times longer (2:00 total)
+
+  Interpolate between frames (attempt 1)
+    ffmpeg -i earth_night_rotate_1080.h264_quarter_speed.mp4 -filter:v "minterpolate='mi_mode=mci:mc_mode=aobmc:vsbmc=1:fps=30'" earth_night_rotate_1080.h264_quarter_speed_smoothed.mp4
+    Output
+      is a choppy video/animation
+      is a file with the same framerate
+        therefore not much room for interpolated frames!
+
+  Interpolate between frames (attempt 2)
+    ffmpeg -i earth_night_rotate_1080.h264_quarter_speed.mp4 -filter:v minterpolate -r 120 earth_night_rotate_1080.h264_quarter_speed_smoothed_2.mp4
+    Output
+      is a choppy video/animation
+
+Attempt 2
+  Slow to 33% speed
+    ffmpeg -i earth_night_rotate_1080.h264.mov -filter:v "setpts=3.0*PTS" -r 10 earth_night_rotate_1080.h264_10fps_.30_speed.mp4
+    Output
+      is a file where the duration between timestamps of successive frames is 3 times longer
+      is a file with the same number of frames
+      is a file with 10fps framerate (aha!)
+      is a video that is 3 times longer
+
+  Interpolate between frames
+    ffmpeg -i earth_night_rotate_1080.h264_10fps_.30_speed.mp4 -filter:v minterpolate -r 30 earth_night_rotate_1080.h264_10fps_.30_speed_30fps_smoothed.mp4
+    Output
+      is a file with 30fps framerate
+      is a smooth video, except for between the last frame and the first frame
+
+  Interpolate between frames 2
+    Export first frame to image
+      ffmpeg -i earth_night_rotate_1080.h264.mov -vf "select=eq(n\,0)" -q:v 1 frame_1.jpg
+
+    Convert frame to .mp4
+      ffmpeg -i frame_1.jpg -framerate 10 -r 10 -c:v libx264 -x264opts stitchable frame_1.mp4
+
+    Merge source and exported frame
+      ffmpeg -f concat -i merge_list.txt -c copy earth_night_rotate_1080.h264_10fps_.30_speed_bookended_frame.mp4
+
+  Interpolate between frames 3
+    Loop video once
+      ffmpeg -stream_loop 1 -i earth_night_rotate_1080.h264_10fps_.30_speed.mp4 -c copy earth_night_rotate_1080.h264_10fps_.30_speed_loop_once.mp4
+      Output
+        is a file that takes the input (1:30) and loops it once (3:00)
+
+    Crop and interpolate 1
+      Crop
+        Started with 30fps, 0:30s video => 30*30=900
+        Slowed to 33% but kept all frames (still 900 frames, 1:30)
+        Looped video once (1800 frames)
+        Now want to cut to 901 frames before interpolating
+          ffmpeg -i earth_night_rotate_1080.h264_10fps_.30_speed_loop_once.mp4 -vf trim=start_frame=0:end_frame=901 earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate.mp4
+          Output
+            901 frames
+
+      Interpolate
+        ffmpeg -i earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate.mp4 -filter:v minterpolate -r 30 earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_smoothed.mp4
+        Output
+          Upping to 30fps but keeping the same time, means adding 2 interpolated frames between each original frame (1+2=3 10+20=30fps). Total frames should be 900*3+1=2701
+          Total frames is 2699 (missing 2 frames)
+          Smooth except jumps a little between the last frame and the first frame when looping (consistent with missing 2 frames)
+
+    Crop and interpolate 2
+      Crop
+        ffmpeg -i earth_night_rotate_1080.h264_10fps_.30_speed_loop_once.mp4 -vf trim=start_frame=0:end_frame=902 earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_2.mp4
+        Output
+          902 frames
+
+      Interpolate
+        ffmpeg -i earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_2.mp4 -filter:v minterpolate -r 30 earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_smoothed_2.mp4
+        Output
+          2702 frames
+
+      Crop off last frame
+        ffmpeg  -i earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_smoothed_2.mp4 -vf trim=start_frame=0:end_frame=2701 earth_night_rotate_1080.h264_10fps_.30_speed_cropped_before_minterpolate_smoothed_2_cropped.mp4
+        Output
+          Success! 2701 frames, smooth when looping
