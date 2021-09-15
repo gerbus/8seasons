@@ -1,15 +1,15 @@
 /* Page-level */
-html {
+/* html {
   background: #000 url("images/earth_night_rotate_lrg.jpg") no-repeat -300px -100px fixed;
 }
 @media (min-width:576px) {
   html {
     background-position-x: -150px;
-    background-position-y: 50px;
+    background-position-y: 0px;
   }
-}
+} */
 body {
-  background-color: transparent;
+  background-color: black;
 }
 
 .main {
@@ -25,7 +25,7 @@ body {
 @media (min-width:576px) {
   .background video {
     margin-left: -150px;
-    margin-top: 50px;
+    margin-top: 0px;
   }
 }
 
