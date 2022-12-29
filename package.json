@@ -9,7 +9,7 @@
     "moment": "^2.21.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "react-scripts": "1.0.14",
+    "react-scripts": "5.0.1",
     "suncalc": "^1.8.0"
   },
   "scripts": {
