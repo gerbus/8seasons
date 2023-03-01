@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "astronomia": "^1.3.5",
+    "astronomia": "^1.4.0",
     "bootstrap": "^4.0.0",
     "julian": "^0.2.0",
     "moment": "^2.21.0",
